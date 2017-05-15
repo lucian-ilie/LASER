@@ -156,9 +156,11 @@ void helperReportMem(uint64_t &currRPos, uint64_t &currQPos, uint64_t totalRBits
              * enter this loop.
              */
             currR = RefFile.binReads[offsetR?i:i-1];
-            currR >>= DATATYPE_WIDTH-offsetR;
+            if (offsetR)
+                currR >>= DATATYPE_WIDTH-offsetR;
             currQ = QueryFile.binReads[offsetQ?j:j-1];
-            currQ >>= DATATYPE_WIDTH-offsetQ;
+            if (offsetQ)
+                currQ >>= DATATYPE_WIDTH-offsetQ;
         } 
 
         if((currR & global_mask_right[matchSize/2 - 1]) != (currQ &  global_mask_right[matchSize/2 - 1])) {
@@ -485,7 +487,11 @@ void checkCommandLineOptions(uint32_t &options)
 
 void print_help_msg()
 {
-    cout << "e-mem finds and outputs the position and length of all maximal" << endl;
+    cout <<  endl;
+    cout << "E-MEM Version 1.0.0, Sep. 25, 2014" << endl;
+    cout << "© 2014 Nilesh Khiste, Lucian Ilie" << endl;
+    cout <<  endl;
+    cout << "E-MEM finds and outputs the position and length of all maximal" << endl;
     cout << "exact matches (MEMs) between <query-file> and <reference-file>" << endl;
     cout << endl;
     cout << "Usage: ../e-mem [options]  <reference-file>  <query-file>" << endl;
@@ -650,9 +656,6 @@ int main (int argc, char *argv[])
         }else if (boost::equals(argv[n],"-h")){
             print_help_msg();
             exit(EXIT_SUCCESS);
-        }else if (boost::equals(argv[n],"-p")){
-            commonData::pfx_path = argv[n+1];
-            n+=2;
         }else {
             cout << "ERROR: Invalid option." << endl << flush;
             print_help_msg();
@@ -665,7 +668,7 @@ int main (int argc, char *argv[])
     /*
      * Check if e-mem if being run from QUAST 
      */
-    sprintf(commonData::nucmer_path, "%s/%d_tmp", commonData::pfx_path.c_str(), getpid());
+    sprintf(commonData::nucmer_path, "%s/%d_tmp", getenv("NUCMER_E_MEM_OUTPUT_DIRPATH")?getenv("NUCMER_E_MEM_OUTPUT_DIRPATH"):".",getpid());
 
     tmpFilesInfo arrayTmpFile(IS_MATCH_BOTH_DEF(options)?(2*NUM_TMP_FILES+2):NUM_TMP_FILES+2);
     arrayTmpFile.openFiles(ios::out|ios::binary, IS_MATCH_BOTH_DEF(options)?(2*NUM_TMP_FILES+2):NUM_TMP_FILES+2);

@@ -41,7 +41,6 @@ class commonData {
     static int32_t lenInHeader;
     static int32_t relQueryPos;
     static char nucmer_path[256];
-    static std::string pfx_path;
 };
     
 int32_t commonData::minMemLen=100; // 2 bit representation=50
@@ -53,7 +52,6 @@ int32_t commonData::fourColOutput=0;
 int32_t commonData::lenInHeader=0;
 int32_t commonData::relQueryPos=0;
 char commonData::nucmer_path[256]={'\0'};
-std::string commonData::pfx_path;
 
 
 class seqData {
